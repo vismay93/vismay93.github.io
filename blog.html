@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blog — Vismay Patel</title>
+    <meta name="description"
+        content="Blog posts by Vismay Patel on Machine Learning, Computer Vision, and Generative AI.">
+    <meta name="author" content="Vismay Patel">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="libs/academicons-1.9.1/css/academicons.min.css">
+</head>
+
+<body class="page-load">
+
+    <!-- ===== Navigation ===== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-logo">V<span>.</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#experience">Experience</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="index.html#skills">Skills</a></li>
+                <li><a href="blog.html" class="active">Blog</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="cv/Latest_CV.pdf" class="nav-cta">Resume</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ===== Blog Hero ===== -->
+    <section class="blog-hero">
+        <div class="hero-bg"></div>
+        <div class="bg-glow bg-glow-1"></div>
+        <div class="bg-glow bg-glow-2"></div>
+
+        <div class="animate-on-scroll">
+            <h1>The <span class="gradient-text">Blog</span></h1>
+            <p>Thoughts on Machine Learning, Computer Vision, and building intelligent systems.</p>
+        </div>
+    </section>
+
+    <main>
+        <section class="section" style="padding-top: 30px;">
+            <div class="container">
+
+                <!-- Filters — dynamically generated -->
+                <div class="blog-filters animate-on-scroll" id="blogFilters">
+                    <button class="blog-filter-tag active" data-filter="all">All Posts</button>
+                </div>
+
+                <!-- Blog Grid — dynamically populated -->
+                <div class="blog-grid" id="blogGrid">
+                    <!-- Posts loaded from blog/posts.json -->
+                </div>
+
+                <!-- Empty state -->
+                <div class="blog-empty-state" id="blogEmpty" style="display: none;">
+                    <div class="empty-icon">📝</div>
+                    <h3>No posts yet</h3>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== Footer ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">V<span>.</span></div>
+                <div class="social-links">
+                    <a href="https://github.com/" target="_blank" aria-label="GitHub">
+                        <i class="fa fa-github"></i>
+                    </a>
+                    <a href="https://scholar.google.co.in/citations?user=ShfcfMQAAAAJ&hl=en" target="_blank"
+                        aria-label="Google Scholar">
+                        <i class="ai ai-google-scholar-square"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/vismay-patel-24b2123a/" target="_blank" aria-label="LinkedIn">
+                        <i class="fa fa-linkedin"></i>
+                    </a>
+                    <a href="https://www.instagram.com/vismay_xyz/" target="_blank" aria-label="Instagram">
+                        <i class="fa fa-instagram"></i>
+                    </a>
+                    <a href="https://500px.com/p/patelvismaya" target="_blank" aria-label="500px">
+                        <i class="fa fa-500px"></i>
+                    </a>
+                    <a href="https://www.flickr.com/people/ofvismay/" target="_blank" aria-label="Flickr">
+                        <i class="fa fa-flickr"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Vismay Patel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/scripts.js"></script>
+    <script>
+        (async function () {
+            const blogGrid = document.getElementById('blogGrid');
+            const blogFilters = document.getElementById('blogFilters');
+            const blogEmpty = document.getElementById('blogEmpty');
+
+            try {
+                const res = await fetch('blog/posts.json');
+                const posts = await res.json();
+
+                if (!posts.length) {
+                    blogEmpty.style.display = '';
+                    return;
+                }
+
+                // Build unique category list for filters
+                const categories = [...new Set(posts.map(p => p.category))];
+                categories.forEach(cat => {
+                    const btn = document.createElement('button');
+                    btn.className = 'blog-filter-tag';
+                    btn.setAttribute('data-filter', cat);
+                    btn.textContent = cat;
+                    blogFilters.appendChild(btn);
+                });
+
+                // Render blog cards
+                posts
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .forEach((post, i) => {
+                        const dateStr = new Date(post.date).toLocaleDateString('en-US', {
+                            year: 'numeric', month: 'short', day: 'numeric'
+                        });
+
+                        const card = document.createElement('article');
+                        card.className = 'blog-card glass-card animate-on-scroll' + (i > 0 ? ' animate-delay-' + Math.min(i * 2, 6) : '');
+                        card.setAttribute('data-category', post.category);
+                        card.innerHTML =
+                            '<div class="blog-card-image">' +
+                            '<img src="' + post.image + '" alt="' + post.title + '">' +
+                            '</div>' +
+                            '<div class="blog-card-body">' +
+                            '<div class="blog-meta">' +
+                            '<span class="blog-category">' + post.category + '</span>' +
+                            '<span>' + dateStr + '</span>' +
+                            '<span>' + post.readTime + ' read</span>' +
+                            '</div>' +
+                            '<h3>' + post.title + '</h3>' +
+                            '<p>' + post.excerpt + '</p>' +
+                            '<a href="blog/post.html?slug=' + post.slug + '" class="blog-read-more">' +
+                            'Read more <i class="fa fa-arrow-right"></i>' +
+                            '</a>' +
+                            '</div>';
+                        blogGrid.appendChild(card);
+                    });
+
+                // Re-observe new cards for scroll animation
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { rootMargin: '0px 0px -60px 0px', threshold: 0.15 });
+
+                document.querySelectorAll('.blog-card.animate-on-scroll').forEach(el => observer.observe(el));
+
+                // Filter click handlers
+                blogFilters.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.blog-filter-tag');
+                    if (!btn) return;
+
+                    blogFilters.querySelectorAll('.blog-filter-tag').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.getAttribute('data-filter');
+                    document.querySelectorAll('.blog-card').forEach(card => {
+                        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                            card.style.display = '';
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateY(20px)';
+                            requestAnimationFrame(() => {
+                                card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            });
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+
+            } catch (err) {
+                blogEmpty.style.display = '';
+                console.warn('Could not load blog posts:', err);
+            }
+        })();
+    </script>
+</body>
+
+</html>

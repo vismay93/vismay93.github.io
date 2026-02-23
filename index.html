@@ -1,363 +1,460 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+<html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Vismay's Portfolio</title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
-    <link rel="stylesheet" href="libs/academicons-1.9.1/css/academicons.min.css" />
-    <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/styles.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide|Sofia|Trirong">
-    <style>
-        .dp {
-          display: inline-block;
-          width: 250px;
-          height: 250px;
-          border-radius: 50%;
-          background-image: url('images/dp.png');
-          background-repeat: no-repeat;
-          background-position: center center;
-          background-size: cover;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vismay Patel - Applied Scientist & ML Researcher</title>
+  <meta name="description"
+    content="Portfolio of Vismay Patel - Applied Scientist at Amazon with 8 years in ML, Computer Vision, NLP, and Generative AI. IIT Madras alumnus.">
+  <meta name="author" content="Vismay Patel">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="libs/academicons-1.9.1/css/academicons.min.css">
 </head>
 
-<body>
-    <div id="mobile-menu-open" class="shadow-large">
-        <i class="fa fa-bars" aria-hidden="true"></i>
+<body class="page-load">
+
+  <!-- ===== Navigation ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="#" class="nav-logo">V<span>.</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="cv/Latest_CV.pdf" class="nav-cta">Resume</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
-    <!-- End #mobile-menu-toggle -->
-    <header>
-        <div id="mobile-menu-close">
-            <span>Close</span> <i class="fa fa-times" aria-hidden="true"></i>
-        </div>
-        <ul id="menu" class="shadow">
-            <li>
-                <a href="#about">About</a>
-            </li>
-            <li>
-                <a href="#experience">Experience</a>
-            </li>
-            <li>
-                <a href="#education">Education</a>
-            </li>
-            <li>
-                <a href="#projects">Projects</a>
-            </li>
-            <li>
-                <a href="#skills">Skills</a>
-            </li>
-            <li>
-                <a href="#contact">Contact</a>
-            </li>
-        </ul>
-    </header>
-    <!-- End header -->
+  </nav>
 
-    <div id="lead">
-        <div id="lead-content">
-            <div class="dp"></div>
-            <h1 style="font-family: 'Trirong', sans-serif;">Vismay Patel</h1>
-            <h2>Machine Learning Researcher</h2>
-            <a href="cv/Latest_CV.pdf" class="btn-rounded-white">Download Resume</a>
-        </div>
-        <!-- End #lead-content -->
+  <!-- ===== Hero ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
 
-        <div id="lead-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-avatar-wrapper animate-on-scroll">
+        <img src="images/dp.png" alt="Vismay Patel">
+      </div>
 
-        <div id="lead-down">
-            <span>
-                <i class="fa fa-chevron-down" aria-hidden="true"></i>
-            </span>
-        </div>
-        <!-- End #lead-down -->
+      <h1 class="animate-on-scroll animate-delay-1">
+        Hi, I'm <span class="gradient-text">Vismay</span>
+      </h1>
+
+      <p class="subtitle animate-on-scroll animate-delay-2">Applied Scientist &amp; ML Researcher</p>
+
+      <p class="tagline animate-on-scroll animate-delay-3">
+        7+ years in Computer Vision, NLP, Deep Learning &amp; Generative AI &bull; IIT Madras Alumnus
+      </p>
+
+      <div class="hero-buttons animate-on-scroll animate-delay-4">
+        <a href="#contact" class="btn-primary">
+          <i class="fa fa-paper-plane"></i> Get in Touch
+        </a>
+        <a href="cv/Latest_CV.pdf" class="btn-outline">
+          <i class="fa fa-download"></i> Download Resume
+        </a>
+      </div>
     </div>
-    <!-- End #lead -->
 
-    <div id="about">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h2 class="heading">About Me</h2>
-                </div>
-                <div class="col-md-8">
-                    <p>
-                        I am a Machine Learning and Computer Vision Researcher. I have done my MS by Research from IIT
-                        Madras. Currently, I am working as a full-time Applied Scientist at Amazon INC.'s Moderation 
-                        Automation and Relevance Systems (MARS) team.
-
-                        <!-- My research interests are Object Recognition, Domain Adaptaion and Image Generation techniques.
-                        I have worked on wide variety of projects including Sketch based Image Retrieval, Shape based
-                        Object Recognition, Pose Estimation, Layout Understanding from Document Images and Time-series
-                        Analysis. I am also interested in working with Cloud and Deployement services such Kubernetes
-                        and AWS services and employing such techniques for ML training and deployment. -->
-                    </p>
-                </div>
-            </div>
-        </div>
+    <div class="hero-scroll-indicator">
+      <div class="mouse"></div>
+      <span>Scroll</span>
     </div>
-    <!-- End #about -->
+  </section>
 
-    <div id="experience" class="background-alt">
-        <h2 class="heading">Experience</h2>
-        <div id="experience-timeline">
-            <div data-date="January 2022 – present">
-                <h3>Amazon</h3>
-                <h4>Applied Scientist</h4>
-                <p>
-                    I am working as part of MARS team that is part of Amazon Ads. I am working on projects related to 
-                    automatic moderatiom of Ads.
-                </p>
-            </div>
+  <main>
 
-            <div data-date="April 2020 – December 2021">
-                <h3>Verisk Analytics Inc.</h3>
-                <h4>Machine Learning Engineer</h4>
-                <p>
-                    I am working as part of the central AI Research team of Verisk Analytics Inc. I am working on
-                    projects involving Document Understanding, Pandemic Modeling, and Document Retrieval using the
-                    latest Deep Learning techniques. I am also involved in developing platforms for various Machine
-                    Learning Use cases.
-                </p>
-            </div>
-
-            <div data-date="August 2018 – April 2020">
-                <h3>CodeNation LLC.</h3>
-                <h4>Software Developer</h4>
-                <p>
-                    At CodeNation I worked on various innovative projects such as Automatic code analysis and auto fix
-                    using code-specific knowledge graphs, Time-series forecasting, and anomaly detection for
-                    multi-variate time-series and ML Factory platform for streamlined ML workflow generation.
-                </p>
-            </div>
-
-            <div data-date="January 2018 – March 2018">
-                <h3>FindMeAShoe</h3>
-                <h4>Internship</h4>
-                <p>
-                    At FindMeAShoe, I developed an algorithm to detect four corners of a photographed paper sheet where
-                    one or more corner(s) could be occluded. We made use of human pose estimation techniques for
-                    occlusion aware boundary detection.
-                </p>
-            </div>
+    <!-- ===== About ===== -->
+    <section class="section" id="about">
+      <div class="bg-glow bg-glow-3"></div>
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <h2 class="section-title">About <span class="gradient-text">Me</span></h2>
         </div>
-    </div>
-    <!-- End #experience -->
 
-    <div id="education">
-        <h2 class="heading">Education</h2>
-        <div class="education-block">
-            <h3>Indian Institute of Technology Madras</h3>
-            <span class="education-date">August 2014 - January 2018</span>
-            <h4>Masters of Science in Computer Science</h4>
+        <div class="about-grid">
+          <div class="about-image-card animate-on-scroll">
+            <img src="images/dp.png" alt="Vismay Patel">
+          </div>
+
+          <div class="about-text animate-on-scroll animate-delay-2">
+            <h3>Applied Scientist</h3>
             <p>
-                My Masters' thesis is titled "Data Augmentation using Part-based Deformations of Shapes", where I
-                propose new data augmentation techniques using part decomposition of shapes. During my Masters', I have
-                also worked on projects involving Pedestrian Detection, Sketch-based Image Retrieval, Bi-modal
-                Personality Analysis, and Image and Video Inpainting.
+              I specialize in architecting and deploying scalable machine learning solutions across Computer Vision,
+              NLP, Deep Learning, and Generative AI. With over 7.5 years of experience and a Master's in Research
+              from IIT Madras, I have a proven track record in technical leadership and translating cutting-edge
+              research into production-ready solutions.
             </p>
+            <p>
+              Currently at Amazon's Ads Trust team, I lead the development of multimodal content labeling systems,
+              regulatory compliance pipelines, and billion-scale image retrieval platforms using VLMs, LLMs, and
+              diffusion models.
+            </p>
+            <p>
+              I am also an avid photgrapher and highly interested in computational photography.
+            </p>
+            <p>
+
+            </p>
+
+            <div class="about-stats">
+              <div class="stat-item">
+                <span class="stat-number">7+</span>
+                <span class="stat-label">Years Experience</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">4+</span>
+                <span class="stat-label">Publications</span>
+              </div>
+              <!-- <div class="stat-item">
+                <span class="stat-number">4</span>
+                <span class="stat-label">Companies</span>
+              </div> -->
+            </div>
+          </div>
         </div>
-        <!-- End .education-block -->
-        <div class="education-block">
+      </div>
+    </section>
+
+    <!-- ===== Experience ===== -->
+    <section class="section" id="experience">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <h2 class="section-title">Work <span class="gradient-text">Experience</span></h2>
+          <p class="section-subtitle">My professional journey in ML, AI, and software engineering.</p>
+        </div>
+
+        <div class="timeline">
+          <!-- Amazon -->
+          <div class="timeline-item animate-on-scroll">
+            <div class="timeline-card glass-card">
+              <span class="timeline-date">January 2022 – Present</span>
+              <h3>Amazon</h3>
+              <h4>Applied Scientist - Ads Trust Team</h4>
+              <ul>
+                <li>Led architecture for a multimodal content labeling system using VLMs achieving
+                  90% coverage at 95% precision</li>
+                <li>Architected regulatory compliance system for pharmaceutical ads</li>
+                <li>Implemented real-time content moderation and billion-scale object-centric image retrieval platform
+                </li>
+                <li>Developed synthetic data generation pipelines and Generative Image Models</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Verisk -->
+          <div class="timeline-item animate-on-scroll animate-delay-1">
+            <div class="timeline-card glass-card">
+              <span class="timeline-date">April 2020 - December 2021</span>
+              <h3>Verisk Analytics Inc.</h3>
+              <h4>Machine Learning Engineer - Global R&amp;D Team</h4>
+              <ul>
+                <li>Developed enterprise-scale document information extraction and synthetic document generation
+                  pipeline</li>
+                <li>Architected pandemic modeling systems using agent-based network simulations</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- CodeNation -->
+          <div class="timeline-item animate-on-scroll animate-delay-2">
+            <div class="timeline-card glass-card">
+              <span class="timeline-date">August 2018 - April 2020</span>
+              <h3>CodeNation LLC.</h3>
+              <h4>Software Development Engineer</h4>
+              <ul>
+                <li>Deployed "ML Factory" - an AutoML platform for streamlined ML model training and deployment</li>
+                <li>Built "AutoFix" - AI-based code quality improvement using code-specific knowledge graphs</li>
+                <li>Developed time-series forecasting and anomaly detection models for multi-variate time-series</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- FindMeAShoe -->
+          <div class="timeline-item animate-on-scroll animate-delay-3">
+            <div class="timeline-card glass-card">
+              <span class="timeline-date">February 2018 – April 2018</span>
+              <h3>Find Me A Shoe</h3>
+              <h4>Intern</h4>
+              <ul>
+                <li>Developed algorithm for foot measurement extraction from multi-view images using pose estimation
+                  techniques</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Education ===== -->
+    <section class="section" id="education">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <h2 class="section-title"><span class="gradient-text">Education</span></h2>
+          <p class="section-subtitle">Academic background and research experience.</p>
+        </div>
+
+        <div class="education-grid">
+          <div class="education-card glass-card animate-on-scroll">
+            <div class="edu-icon">🎓</div>
+            <h3>Indian Institute of Technology Madras</h3>
+            <p class="edu-date">2014 – 2018</p>
+            <span class="edu-gpa">CGPA: 8.8/10</span>
+            <h4>M.S. in Computer Science &amp; Engineering</h4>
+            <p>
+              Specialization in Computer Vision and Deep Learning. Thesis: "Data Augmentation using Part-based
+              Deformations of Shapes." Also worked on Pedestrian Detection, Sketch-based Image Retrieval,
+              Bi-modal Personality Analysis, and Image &amp; Video Inpainting.
+            </p>
+          </div>
+
+          <div class="education-card glass-card animate-on-scroll animate-delay-2">
+            <div class="edu-icon">📚</div>
             <h3>Institute of Technology, Nirma University</h3>
-            <span class="education-date">August 2010 - May 2014</span>
-            <h4>Bachelor of Technology in Information Technology</h4>
+            <p class="edu-date">2010 – 2014</p>
+            <span class="edu-gpa">CGPA: 7.76/10</span>
+            <h4>B.Tech. in Information Technology</h4>
+            <p>
+              Strong foundation in algorithms, data structures, and software engineering fundamentals.
+            </p>
+          </div>
         </div>
-        <!-- End .education-block -->
+      </div>
+    </section>
 
-        <!-- <div class="education-block">
-            <h3>University of Ottawa</h3>
-            <span class="education-date">Sept 2016 - Sept 2017</span>
-            <h4>Bachelor of Science in Computer Science</h4>
-            <ul>
-                <li>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </li>
-                <li>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </li>
-                <li>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </li>
-            </ul>
-        </div> -->
-        <!-- End .education-block -->
-    </div>
-    <!-- End #education -->
+    <!-- ===== Projects & Publications ===== -->
+    <section class="section" id="projects">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <h2 class="section-title">Projects &amp; <span class="gradient-text">Publications</span></h2>
+          <p class="section-subtitle">Research papers, competition wins, and featured work.</p>
+        </div>
 
-    <div id="projects" class="background-alt">
-        <h2 class="heading">Projects</h2>
-        <div class="container">
-            <div class="row">
-                <div class="project shadow-large">
-                    <div class="project-image">
-                        <img src="images/Project1.png" width="300" height="250" />
-                    </div>
-                    <!-- End .project-image -->
-                    <div class="project-info">
-                        <h3>Data Augmentation using Part-based Deformations of Shapes (Matlab, Torch)</h3>
-                        <p>
-                            Done as part of my thesis research work. This project addresses the problem of learning good
-                            image classifiers with limited labeled data. We propose to use the part analysis of shapes
-                            extracted from available images to augment the labeled data. We show improved performance
-                            with CNN classifiers for shape classification tasks using such augmentation.
-                        </p>
-                        <a href="https://ieeexplore.ieee.org/abstract/document/8658637">View Publication</a>
-                    </div>
-                    <!-- End .project-info -->
-                </div>
-                <!-- End .project -->
-
-                <div class="project shadow-large">
-                    <div class="project-image">
-                        <img src="images/Project2.png" width="300" height="250" />
-                    </div>
-                    <!-- End .project-image -->
-                    <div class="project-info">
-                        <h3>Personality Analysis from Inerview Videos (Lua, Torch)</h3>
-                        <p>
-                            Done as part of "First Impressions" challenge organized by Chalearn Looking at People, where
-                            we designed and implemented a Deep Learning based solution for Personality Analysis from
-                            Videos. We employed a novel training technique for videos and scored 2nd rank in the
-                            competition.
-                        </p>
-                        <a href="https://github.com/InnovArul/first-impressions"> View Project </a>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        <a href="https://link.springer.com/chapter/10.1007/978-3-319-49409-8_27"> View Publication </a>
-                    </div>
-                    <!-- End .project-info -->
-                </div>
-                <!-- End .project -->
-
-                <div class="project shadow-large">
-                    <div class="project-image">
-                        <img src="images/Project3.png" width="250" height="250" />
-                    </div>
-                    <!-- End .project-image -->
-                    <div class="project-info">
-                        <h3>Video and Image inpainting (Python, Pytorch)</h3>
-                        <p>
-                            Done as part of challenges organized by Chalearn Looking at People on Image and Video
-                            Inpainting, where we employed GAN based techniques to remove captions from videos and
-                            images. We scored 3rd rank in the competition.
-                        </p>
-                        <a href="https://github.com/vismay93/ImageInpaintingChalearn"> View Project 1</a>&nbsp;
-                        <a href="https://github.com/vismay93/VideoDecaptioningChalearn"> 2 </a>&nbsp;&nbsp;&nbsp;&nbsp;
-                        <a href="https://link.springer.com/chapter/10.1007/978-3-030-25614-2_8"> View Publication
-                            1</a>&nbsp;
-                        <a href="https://link.springer.com/chapter/10.1007/978-3-030-25614-2_7"> 2</a>
-                    </div>
-                    <!-- End .project-info -->
-                </div>
-                <!-- End .project -->
+        <div class="projects-grid">
+          <!-- WACV - Data Aug -->
+          <div class="project-card glass-card animate-on-scroll animate-delay-2">
+            <div class="project-card-image">
+              <img src="images/Project1.png" alt="Data Augmentation with Part Analysis">
+              <div class="overlay"></div>
             </div>
-        </div>
-    </div>
-    <!-- End #projects -->
-
-    <div id="skills">
-        <h2 class="heading">Skills</h2>
-        <ul>
-            <li>Pytorch</li>
-            <li>Keras</li>
-            <li>Tensorflow</li>
-            <li>Torch</li>
-            <li>Caffe</li>
-            <li>OpenCV</li>
-            <li>Python</li>
-            <li>Java</li>
-            <li>C++</li>
-            <li>Lua</li>
-            <li>Kubernetes</li>
-            <li>Docker</li>
-            <li>Flask</li>
-            <li>Django</li>
-            <li>Mysql</li>
-            <li>AWS Python SDK</li>
-            <li>Neo4j</li>
-            <li>Node-red</li>
-            <li>Matlab</li>
-            <li>Computer Vision</li>
-            <li>Machine Learning</li>
-            <li>Deep Learning</li>
-            <li>Object Detection</li>
-            <li>Image Classification</li>
-            <li>3D reconstruction</li>
-            <li>Domain Adaptation</li>
-        </ul>
-    </div>
-    <!-- End #skills -->
-
-
-    <div id="contact">
-        <h2>Get in Touch</h2>
-        <div id="contact-form">
-            <form method="POST" action="https://formspree.io/f/xgepppep">
-                <input type="hidden" name="_subject" value="Contact request from personal website" />
-                <input type="email" name="_replyto" placeholder="Your email" required>
-                <textarea name="message" placeholder="Your message" required></textarea>
-                <button type="submit">Send</button>
-            </form>
-        </div>
-        <!-- End #contact-form -->
-    </div>
-    <!-- End #contact -->
-
-
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-5 copyright">
-                    <p>
-                        Copyright &copy; 2020 VISMAY PATEL
-                    </p>
-                </div>
-                <div class="col-sm-2 top">
-                    <span id="to-top">
-                        <i class="fa fa-chevron-up" aria-hidden="true"></i>
-                    </span>
-                </div>
-                <div class="col-sm-5 social">
-                    <ul>
-                        <li>
-                            <a href="https://github.com/" target="_blank"><i class="fa fa-github"
-                                    aria-hidden="true"></i></a>
-                        </li>
-                        <li>
-                            <a href="https://scholar.google.co.in/citations?user=ShfcfMQAAAAJ&hl=en" target="_blank"><i
-                                    class="ai ai-google-scholar-square" aria-hidden="true"></i></a>
-                        </li>
-                        <li>
-                            <a href="https://www.linkedin.com/in/vismay-patel-24b2123a/" target="_blank"><i
-                                    class="fa fa-linkedin" aria-hidden="true"></i></a>
-                        </li>
-                        <li>
-                            <a href="https://www.instagram.com/vismay_xyz/" target="_blank"><i class="fa fa-instagram"
-                                    aria-hidden="true"></i></a>
-                        </li>
-                        <li>
-                            <a href="https://500px.com/p/patelvismaya" target="_blank"><i class="fa fa-500px"
-                                    aria-hidden="true"></i></a>
-                        </li>
-                        <li>
-                            <a href="https://www.flickr.com/people/ofvismay/" target="_blank"><i class="fa fa-flickr"
-                                    aria-hidden="true"></i></a>
-                        </li>
-                    </ul>
-                </div>
+            <div class="project-card-body">
+              <span class="project-venue">WACV 2019</span>
+              <div class="project-tech">
+                <span>Matlab</span>
+                <span>Torch</span>
+              </div>
+              <h3>Data Augmentation using Part-based Deformations of Shapes</h3>
+              <p>
+                M.S. thesis research - using part analysis of shapes extracted from available images to
+                augment labeled data, achieving improved CNN classifier performance for shape classification.
+              </p>
+              <div class="project-links">
+                <a href="https://ieeexplore.ieee.org/abstract/document/8658637" target="_blank">
+                  <i class="fa fa-file-text-o"></i> Publication
+                </a>
+              </div>
             </div>
-        </div>
-    </footer>
-    <!-- End footer -->
+          </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="js/scripts.min.js"></script>
+          <!-- Personality Analysis -->
+          <div class="project-card glass-card animate-on-scroll animate-delay-3">
+            <div class="project-card-image">
+              <img src="images/Project2.png" alt="Personality Analysis from Videos">
+              <div class="overlay"></div>
+            </div>
+            <div class="project-card-body">
+              <span class="project-venue">ECCV 2016 Workshop</span>
+              <div class="project-tech">
+                <span>Lua</span>
+                <span>Torch</span>
+              </div>
+              <h3>Personality Analysis from Interview Videos</h3>
+              <p>
+                Deep Learning solution for the "First Impressions" challenge by Chalearn Looking at People.
+                Employed a novel training technique for videos - scored 2nd rank in the competition.
+              </p>
+              <div class="project-links">
+                <a href="https://github.com/InnovArul/first-impressions" target="_blank">
+                  <i class="fa fa-github"></i> Project
+                </a>
+                <a href="https://link.springer.com/chapter/10.1007/978-3-319-49409-8_27" target="_blank">
+                  <i class="fa fa-file-text-o"></i> Publication
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video & Image Inpainting -->
+          <div class="project-card glass-card animate-on-scroll animate-delay-4">
+            <div class="project-card-image">
+              <img src="images/Project3.png" alt="Video & Image Inpainting">
+              <div class="overlay"></div>
+            </div>
+            <div class="project-card-body">
+              <span class="project-venue">ECCV 2018 Workshop</span>
+              <div class="project-tech">
+                <span>Python</span>
+                <span>PyTorch</span>
+                <span>GANs</span>
+              </div>
+              <h3>Video and Image Inpainting</h3>
+              <p>
+                GAN-based techniques for caption removal from videos and images. Includes joint caption
+                detection and inpainting - scored 3rd rank in the Chalearn competition.
+              </p>
+              <div class="project-links">
+                <a href="https://github.com/vismay93/ImageInpaintingChalearn" target="_blank">
+                  <i class="fa fa-github"></i> Image
+                </a>
+                <a href="https://github.com/vismay93/VideoDecaptioningChalearn" target="_blank">
+                  <i class="fa fa-github"></i> Video
+                </a>
+                <a href="https://link.springer.com/chapter/10.1007/978-3-030-25614-2_8" target="_blank">
+                  <i class="fa fa-file-text-o"></i> Pub 1
+                </a>
+                <a href="https://link.springer.com/chapter/10.1007/978-3-030-25614-2_7" target="_blank">
+                  <i class="fa fa-file-text-o"></i> Pub 2
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Skills ===== -->
+    <section class="section" id="skills">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <h2 class="section-title">Technical <span class="gradient-text">Skills</span></h2>
+          <p class="section-subtitle">Technologies, frameworks, and research domains.</p>
+        </div>
+
+        <div class="skills-categories">
+          <div class="skill-category glass-card animate-on-scroll">
+            <h3><span class="cat-icon cat-lang">💻</span> Languages and Frameworks</h3>
+            <div class="skill-tags">
+              <span class="skill-tag">Python</span>
+              <span class="skill-tag">Java</span>
+              <span class="skill-tag">Lua</span>
+              <span class="skill-tag">C++</span>
+              <span class="skill-tag">PyTorch</span>
+              <span class="skill-tag">Transformers</span>
+              <span class="skill-tag">Sklearn</span>
+              <span class="skill-tag">JAX</span>
+              <span class="skill-tag">TensorFlow</span>
+              <span class="skill-tag">OpenCV</span>
+            </div>
+          </div>
+
+          <div class="skill-category glass-card animate-on-scroll animate-delay-1">
+            <h3><span class="cat-icon cat-domain">🔬</span> Domains</h3>
+            <div class="skill-tags">
+              <span class="skill-tag">Computer Vision</span>
+              <span class="skill-tag">NLP</span>
+              <span class="skill-tag">Deep Learning</span>
+              <span class="skill-tag">Generative AI</span>
+              <span class="skill-tag">Multimodal Models</span>
+              <span class="skill-tag">Explainable AI</span>
+              <span class="skill-tag">Active Learning</span>
+            </div>
+          </div>
+
+
+          <div class="skill-category glass-card animate-on-scroll animate-delay-4">
+            <h3><span class="cat-icon cat-mlops">☁️</span> MLOps / Cloud</h3>
+            <div class="skill-tags">
+              <span class="skill-tag">AWS</span>
+              <span class="skill-tag">Neo4j</span>
+              <span class="skill-tag">Kubernetes</span>
+              <span class="skill-tag">Docker</span>
+              <span class="skill-tag">Kubeflow</span>
+              <span class="skill-tag">Kubeflow</span>
+              <span class="skill-tag">VLLM</span>
+              <span class="skill-tag">SGLang</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Contact ===== -->
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="section-header animate-on-scroll">
+          <h2 class="section-title">Get in <span class="gradient-text">Touch</span></h2>
+          <p class="section-subtitle">Have a question or want to collaborate? Let's talk!</p>
+        </div>
+
+        <div class="contact-content animate-on-scroll animate-delay-2">
+          <form class="contact-form" method="POST" action="https://formspree.io/f/xgepppep">
+            <input type="hidden" name="_subject" value="Contact request from personal website">
+            <div class="form-group">
+              <label for="email">Your Email</label>
+              <input type="email" id="email" name="_replyto" placeholder="name@example.com" required>
+            </div>
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" placeholder="Write your message here..." required></textarea>
+            </div>
+            <button type="submit">
+              <i class="fa fa-paper-plane"></i> Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">V<span>.</span></div>
+        <div class="social-links">
+          <a href="https://github.com/" target="_blank" aria-label="GitHub">
+            <i class="fa fa-github"></i>
+          </a>
+          <a href="https://scholar.google.co.in/citations?user=ShfcfMQAAAAJ&hl=en" target="_blank"
+            aria-label="Google Scholar">
+            <i class="ai ai-google-scholar-square"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/vismay-patel-24b2123a/" target="_blank" aria-label="LinkedIn">
+            <i class="fa fa-linkedin"></i>
+          </a>
+          <a href="https://www.instagram.com/vismay_xyz/" target="_blank" aria-label="Instagram">
+            <i class="fa fa-instagram"></i>
+          </a>
+          <a href="https://500px.com/p/patelvismaya" target="_blank" aria-label="500px">
+            <i class="fa fa-500px"></i>
+          </a>
+          <a href="https://www.flickr.com/people/ofvismay/" target="_blank" aria-label="Flickr">
+            <i class="fa fa-flickr"></i>
+          </a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Vismay Patel. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/scripts.js"></script>
 </body>
 
 </html>

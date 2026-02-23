@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blog Post — Vismay Patel</title>
+    <meta name="description" content="Blog post by Vismay Patel">
+    <meta name="author" content="Vismay Patel">
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../libs/academicons-1.9.1/css/academicons.min.css">
+</head>
+
+<body class="page-load">
+
+    <!-- ===== Navigation ===== -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container">
+            <a href="../index.html" class="nav-logo">V<span>.</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="../index.html#about">About</a></li>
+                <li><a href="../index.html#experience">Experience</a></li>
+                <li><a href="../index.html#projects">Projects</a></li>
+                <li><a href="../index.html#skills">Skills</a></li>
+                <li><a href="../blog.html" class="active">Blog</a></li>
+                <li><a href="../index.html#contact">Contact</a></li>
+                <li><a href="../cv/Latest_CV.pdf" class="nav-cta">Resume</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Blog post hero -->
+        <section class="blog-hero" style="padding-bottom: 20px;">
+            <div class="hero-bg"></div>
+            <div class="animate-on-scroll">
+                <div class="blog-meta" style="justify-content: center; margin-bottom: 16px;" id="postMeta"></div>
+                <h1 id="postTitle" style="font-size: 2.6rem; max-width: 740px; margin: 0 auto;">Loading...</h1>
+            </div>
+        </section>
+
+        <!-- Blog post body -->
+        <article class="blog-post-content">
+            <div class="blog-post-body animate-on-scroll" id="postBody">
+                <p style="text-align: center; color: var(--text-muted);">Loading post...</p>
+            </div>
+
+            <div
+                style="margin-top: 60px; padding-top: 30px; border-top: 1px solid var(--border-glass); text-align: center;">
+                <a href="../blog.html" class="btn-outline" style="display: inline-flex;">
+                    <i class="fa fa-arrow-left"></i> Back to Blog
+                </a>
+            </div>
+        </article>
+    </main>
+
+    <!-- ===== Footer ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">V<span>.</span></div>
+                <div class="social-links">
+                    <a href="https://github.com/" target="_blank" aria-label="GitHub"><i class="fa fa-github"></i></a>
+                    <a href="https://scholar.google.co.in/citations?user=ShfcfMQAAAAJ&hl=en" target="_blank"
+                        aria-label="Google Scholar"><i class="ai ai-google-scholar-square"></i></a>
+                    <a href="https://www.linkedin.com/in/vismay-patel-24b2123a/" target="_blank"
+                        aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+                    <a href="https://www.instagram.com/vismay_xyz/" target="_blank" aria-label="Instagram"><i
+                            class="fa fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Vismay Patel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/scripts.js"></script>
+    <!-- marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        (async function () {
+            const params = new URLSearchParams(window.location.search);
+            const slug = params.get('slug');
+
+            if (!slug) {
+                document.getElementById('postTitle').textContent = 'Post not found';
+                document.getElementById('postBody').innerHTML = '<p>No post slug was specified. <a href="../blog.html">Return to blog</a>.</p>';
+                return;
+            }
+
+            try {
+                // Load post metadata from manifest
+                const manifestRes = await fetch('posts.json');
+                const posts = await manifestRes.json();
+                const post = posts.find(p => p.slug === slug);
+
+                if (post) {
+                    document.title = post.title + ' — Vismay Patel';
+                    document.getElementById('postTitle').textContent = post.title;
+                    document.getElementById('postMeta').innerHTML =
+                        '<span class="blog-category">' + post.category + '</span>' +
+                        '<span>' + new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) + '</span>' +
+                        '<span>' + post.readTime + ' read</span>';
+                }
+
+                // Load and render markdown
+                const mdRes = await fetch('posts/' + slug + '.md');
+                if (!mdRes.ok) throw new Error('Post file not found');
+                const mdText = await mdRes.text();
+
+                document.getElementById('postBody').innerHTML = marked.parse(mdText);
+
+            } catch (err) {
+                document.getElementById('postTitle').textContent = 'Post not found';
+                document.getElementById('postBody').innerHTML =
+                    '<p style="text-align:center;">Could not load this post. <a href="../blog.html">Return to blog</a>.</p>';
+            }
+        })();
+    </script>
+</body>
+
+</html>
