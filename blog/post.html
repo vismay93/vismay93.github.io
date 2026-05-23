@@ -210,8 +210,8 @@
 
                 // Load views badge dynamically (using komarev.com - completely free and login-free!)
                 const viewsImg = document.createElement('img');
-                const counterId = `vismay93-blog-${slug}`;
-                viewsImg.src = `https://komarev.com/ghpvc/?username=${encodeURIComponent(counterId)}&color=blue&style=flat-square&label=Views`;
+                const counterId = `https://vismay93.github.io/blog/post.html?slug=${slug}`;
+                viewsImg.src = `https://api.visitorbadge.io/api/visitors?path=${counterId}&labelColor=%232d3a8c&countColor=%231a7a6d&label=Views`;
                 viewsImg.alt = '';
                 viewsImg.style.height = '20px';
                 viewsImg.style.borderRadius = '4px';
