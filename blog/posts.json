@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "slug": "RoPE",
+    "title": "The Evolution of Positional Embeddings: From Absolute PE to YaRN (Yet another RoPE extensioN)",
+    "category": "Deep Learning",
+    "date": "2026-05-23",
+    "readTime": "10 min",
+    "excerpt": "A deep dive into positional embeddings, tracing their evolution from the original sinusoidal approach to Rotary Position Embeddings (RoPE) and context window scaling.",
+    "image": "images/RoPE/cover.png"
+  }
+]
