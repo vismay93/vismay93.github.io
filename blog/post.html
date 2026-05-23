@@ -208,9 +208,10 @@
                     pre.appendChild(button);
                 });
 
-                // Load views badge dynamically
+                // Load views badge dynamically (using komarev.com - completely free and login-free!)
                 const viewsImg = document.createElement('img');
-                viewsImg.src = `https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=${encodeURIComponent(window.location.href)}&count_bg=%237f5af0&title_bg=%232cb67d&icon=&icon_color=%23E7E7E7&title=Views&edge_flat=true`;
+                const counterId = `vismay93-blog-${slug}`;
+                viewsImg.src = `https://komarev.com/ghpvc/?username=${encodeURIComponent(counterId)}&color=blue&style=flat-square&label=Views`;
                 viewsImg.alt = '';
                 viewsImg.style.height = '20px';
                 viewsImg.style.borderRadius = '4px';
