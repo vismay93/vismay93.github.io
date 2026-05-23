@@ -182,10 +182,36 @@
 
                 document.getElementById('postBody').innerHTML = marked.parse(mdText);
 
+                // Add copy buttons to code snippets
+                document.querySelectorAll('.blog-post-body pre').forEach((pre) => {
+                    const button = document.createElement('button');
+                    button.className = 'copy-code-btn';
+                    button.innerHTML = '<i class="fa fa-copy"></i>';
+                    button.setAttribute('aria-label', 'Copy code snippet');
+                    
+                    button.addEventListener('click', async () => {
+                        const code = pre.querySelector('code');
+                        const codeText = code ? code.innerText : pre.innerText;
+                        try {
+                            await navigator.clipboard.writeText(codeText);
+                            button.innerHTML = '<i class="fa fa-check" style="color: #2cb67d;"></i>';
+                            button.classList.add('copied');
+                            setTimeout(() => {
+                                button.innerHTML = '<i class="fa fa-copy"></i>';
+                                button.classList.remove('copied');
+                            }, 1500);
+                        } catch (err) {
+                            console.error('Failed to copy code: ', err);
+                        }
+                    });
+                    
+                    pre.appendChild(button);
+                });
+
                 // Load views badge dynamically
                 const viewsImg = document.createElement('img');
                 viewsImg.src = `https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=${encodeURIComponent(window.location.href)}&count_bg=%237f5af0&title_bg=%232cb67d&icon=&icon_color=%23E7E7E7&title=Views&edge_flat=true`;
-                viewsImg.alt = 'Views';
+                viewsImg.alt = '';
                 viewsImg.style.height = '20px';
                 viewsImg.style.borderRadius = '4px';
                 viewsImg.style.verticalAlign = 'middle';
@@ -206,7 +232,7 @@
                 giscusScript.setAttribute('data-reactions-enabled', '1');
                 giscusScript.setAttribute('data-emit-metadata', '0');
                 giscusScript.setAttribute('data-input-position', 'bottom');
-                giscusScript.setAttribute('data-theme', 'preferred_color_scheme');
+                giscusScript.setAttribute('data-theme', 'noborder_light');
                 giscusScript.setAttribute('data-lang', 'en');
                 giscusScript.crossOrigin = 'anonymous';
                 giscusScript.async = true;
