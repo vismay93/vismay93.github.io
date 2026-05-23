@@ -1691,3 +1691,34 @@ h6 {
     transform: translateY(0);
   }
 }
+
+/* ---------- Comments & Views Styles ---------- */
+.comments-section {
+  max-width: 740px;
+  margin: 60px auto 0 auto;
+  padding: 30px 24px;
+  background: var(--background-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid var(--border-glass);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+.comments-section h3 {
+  font-family: inherit;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+#postViews img {
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+#postViews img:hover {
+  transform: scale(1.05);
+}
