@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Evolution of Positional Embeddings: From Absolute Positional Embeddings to YaRN — Vismay Patel</title>
+    <meta name="description" content="A deep dive into positional embeddings, tracing their evolution from the original sinusoidal approach to Rotary Position Embeddings (RoPE) and YaRN and context window scaling.">
+    <meta name="author" content="Vismay Patel">
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../libs/academicons-1.9.1/css/academicons.min.css">
+
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="The Evolution of Positional Embeddings: From Absolute Positional Embeddings to YaRN — Vismay Patel">
+    <meta property="og:description" content="A deep dive into positional embeddings, tracing their evolution from the original sinusoidal approach to Rotary Position Embeddings (RoPE) and YaRN and context window scaling.">
+    <meta property="og:image" content="https://vismay93.github.io/images/RoPE/cover.png">
+    <meta property="og:url" content="https://vismay93.github.io/blog/YaRN.html">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Evolution of Positional Embeddings: From Absolute Positional Embeddings to YaRN — Vismay Patel">
+    <meta name="twitter:description" content="A deep dive into positional embeddings, tracing their evolution from the original sinusoidal approach to Rotary Position Embeddings (RoPE) and YaRN and context window scaling.">
+    <meta name="twitter:image" content="https://vismay93.github.io/images/RoPE/cover.png">
+    <link rel="canonical" href="https://vismay93.github.io/blog/YaRN.html">
+</head>
+
+<body class="page-load">
+
+    <!-- ===== Navigation ===== -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container">
+            <a href="../index.html" class="nav-logo">V<span>.</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="../index.html#about">About</a></li>
+                <li><a href="../index.html#experience">Experience</a></li>
+                <li><a href="../index.html#projects">Projects</a></li>
+                <li><a href="../index.html#skills">Skills</a></li>
+                <li><a href="../blog.html" class="active">Blog</a></li>
+                <li><a href="../index.html#contact">Contact</a></li>
+                <li><a href="../cv/Latest_CV.pdf" class="nav-cta">Resume</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Blog post hero -->
+        <section class="blog-hero" style="padding-bottom: 20px;">
+            <div class="hero-bg"></div>
+            <div class="animate-on-scroll">
+                <div class="blog-meta" style="justify-content: center; margin-bottom: 16px;" id="postMeta"><span class="blog-category">Deep Learning</span><span>May 23, 2026</span><span>10 min read</span><span style="display: inline-flex; align-items: center; gap: 6px;" id="postViews"></span></div>
+                <h1 id="postTitle" style="font-size: 2.6rem; max-width: 740px; margin: 0 auto;">The Evolution of Positional Embeddings: From Absolute Positional Embeddings to YaRN</h1>
+            </div>
+        </section>
+
+        <!-- Blog post body -->
+        <article class="blog-post-content">
+            <div class="blog-post-body" id="postBody">
+                <p>Transformers revolutionized deep learning by processing sequences in parallel rather than sequentially. But this parallel processing introduced a fundamental flaw: the architecture is inherently permutation-equivariant. If you scramble the words in a sentence, a pure Transformer will output the exact same representations, just scrambled.</p>
+<p>To a raw Transformer, &quot;The dog bit the man&quot; and &quot;The man bit the dog&quot; are identical due to the self-attention mechanism.</p>
+<p>To fix this, we need <strong>Positional Embeddings (PE)</strong> — a way to inject order into the model. In this post, we’ll trace the evolution of positional embeddings from the original Transformer design to the dominant standard in modern LLMs: <strong>Rotary Position Embeddings (RoPE)</strong>, and explore how we scale context windows post-training using techniques like YaRN.</p>
+<hr>
+<h2>1. The Original Solution: Sinusoidal (Absolute) Positional Embeddings</h2>
+<p>In the seminal 2017 paper <em>&quot;Attention Is All You Need&quot;</em> (Vaswani et al.), the authors introduced a deterministic, non-learned approach. They added a unique dense vector to each token&#39;s input embedding based on its absolute position in the sequence.</p>
+<h3>The Math</h3>
+<p>Instead of relying on a single integer to represent position (which would scale poorly and disrupt the gradients), they used a mix of sine and cosine functions operating at different frequencies across the embedding dimensions:</p>
+$$PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$$$PE_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$<p>Where:</p>
+<ul>
+<li><code>pos</code> is the position of the token in the sequence.</li>
+<li><code>i</code> is the dimension index.</li>
+<li><code>d_model</code> is the embedding dimension.</li>
+</ul>
+<h3>Deconstructing the Equation: Why these specific numbers?</h3>
+<p>Looking at the formula, you might wonder why the authors chose this specific arrangement of variables. Every piece serves a distinct mathematical purpose:</p>
+<ul>
+<li><strong>Why <code>2i</code> and not <code>i</code>? (The Sine/Cosine Pairing):</strong>
+The formula splits the embedding vector into pairs. The even dimensions ($2i$) use the sine function, and the adjacent odd dimensions ($2i+1$) use the cosine function <em>of the exact same frequency</em>. This pairing is crucial because of linear algebra and trigonometry. A linear layer in the network can easily compute relative position offsets using the angle addition identities, such as $\sin(A+B) = \sin A\cos B + \cos A\sin B$. If the authors had simply used <code>i</code>, every single dimension would have a slightly different frequency, destroying this mathematical relationship.</li>
+<li><strong>Why <code>d_model</code> as the denominator? (Normalized Scaling):</strong>
+The term $2i / d_{model}$ creates a smooth fraction that strictly scales from $0$ up to $1$, regardless of the model&#39;s size. Whether your model has a tiny embedding dimension of 128 or a massive one of 4096. Without dividing by <code>d_model</code>, changing the embedding size would drastically alter the frequency distribution of the embeddings.</li>
+<li><strong>Why <code>10000</code>? (The Base Wavelength):</strong>
+This is a hyperparameter that dictates the maximum wavelength. The frequencies in the formula range from $1$ (when $i=0$) down to incredibly small fractions (when $2i \approx d_{model}$). A base of 10,000 ensures that the lowest frequency curve has a massive wavelength of $10000 \times 2\pi$. Because this wave is so stretched out, it prevents &quot;wrap-around&quot; confusion. If the base were too small (like 100), the sine wave would repeat itself quickly, and the network might confuse token position 5 with position 105 because their embeddings would look mathematically identical.</li>
+</ul>
+<h3>Why design it this way?</h3>
+<ol>
+<li><strong>Uniqueness:</strong> Every position gets a unique encoding.</li>
+<li><strong>Bounded Values:</strong> Sine and cosine output values between $[-1, 1]$, keeping the embedding scale stable.</li>
+<li><strong>Relative Potential:</strong> The authors hypothesized that the model could easily learn to attend by relative positions, because for any fixed offset $k$, $PE_{pos+k}$ can be represented as a linear function of $PE_{pos}$.</li>
+</ol>
+<p><em>Models using this:</em> FSMT, Marian, Pegasus, and time-series models like Autoformer.</p>
+<hr>
+<h2>2. The Shift to Learned Positional Embeddings</h2>
+<p>While sinusoidal embeddings were mathematically elegant, many subsequent models (like BERT, GPT-2, and OPT) opted for a simpler approach: <strong>Learned Positional Embeddings</strong>.</p>
+<p>Instead of a fixed mathematical formula, the model initializes a separate <code>nn.Embedding</code> matrix of shape <code>[max_seq_len, d_model]</code>.</p>
+$$h_i = x_i + E_{pos}[i]$$<p>During training, the model backpropagates into this matrix, learning the optimal vector representation for &quot;Position 1,&quot; &quot;Position 2,&quot; and so on.</p>
+<ul>
+<li><strong>The Advantage:</strong> It directly optimizes for the dataset.<ul>
+<li>Example: Imagine you are training a model purely on a dataset of clinical medical records where every document strictly begins with the same template: [Date] [Patient ID] [Symptoms].... A fixed sinusoidal formula just tells the model, &quot;Position 1 is the first word, Position 2 is the second word.&quot; But a learned embedding updates its weights during training based on the loss function. Over time, the embedding vector for Position 1 will naturally mold itself to carry the semantic meaning of &quot;Date/Temporal Information,&quot; and Position 2 will inherently represent &quot;Identity.&quot; The model doesn&#39;t just learn spatial distance; it learns the specific structural biases and layout of your exact dataset.</li>
+</ul>
+</li>
+<li><strong>The Flaw:</strong> It is strictly bound by the <code>max_seq_len</code> seen during training. If BERT is trained on 512 tokens, asking it to process token 513 results in a crash because $E_{pos}[513]$ simply doesn&#39;t exist. Extrapolation is impossible without retraining.</li>
+</ul>
+<hr>
+<h2>3. Enter RoPE: Rotary Position Embeddings</h2>
+<p>Both Sinusoidal and Learned embeddings are <strong>Absolute</strong> — they encode <em>where</em> a token is in the overall sequence. However, language relies heavily on <strong>Relative</strong> distances. The relationship between an adjective and a noun is determined by how far apart they are, not whether they appear at position 5 or position 500.</p>
+<p>Introduced by Su et al. (2021) in the RoFormer paper, <strong>Rotary Position Embeddings (RoPE)</strong> solved this by encoding relative position through absolute rotation.</p>
+<h3>How RoPE Works</h3>
+<p>Instead of <em>adding</em> a positional vector to the token embedding before the attention mechanism, RoPE intercepts the Query ($Q$) and Key ($K$) vectors <em>inside</em> the attention head, right before they are multiplied together.</p>
+<p>RoPE pairs up the dimensions of the vector into 2D chunks and rotates each 2D chunk on a Cartesian plane. The angle of rotation depends on the token&#39;s position $m$.</p>
+$$f(x_m, m) = R_{\Theta,m} \cdot x_m$$<p>The rotation matrix $R_{\Theta,m}$ for position $m$ looks like this:</p>
+$$R_{\Theta,m} = \begin{pmatrix} \cos m\theta_1 & -\sin m\theta_1 & & \\ \sin m\theta_1 & \cos m\theta_1 & & \\ & & \cos m\theta_2 & -\sin m\theta_2 \\ & & \sin m\theta_2 & \cos m\theta_2 \\ & & & & \ddots \end{pmatrix}$$<h3>Linking RoPE to Original Transformers</h3>
+<p>Here is the brilliant part: what are those $\theta$ angles? They are exactly the same frequency basis used in the original 2017 sinusoidal embeddings!</p>
+$$\theta_i = 10000^{-2i/d}$$<p>Vaswani <em>added</em> these frequencies to the inputs. RoPE uses these frequencies to <em>rotate</em> the Q and K vectors.</p>
+<p>Because rotation is a linear operation, when the attention mechanism computes the dot product between a Query at position $m$ and a Key at position $n$, the absolute positions cancel out. The resulting attention score is governed entirely by the relative distance $(m - n)$:</p>
+$$\langle f(q_m, m), f(k_n, n) \rangle = \langle R_{\Theta,m-n} \cdot q_m, k_n \rangle$$<p><img src="../images/RoPE/rope_vs_pe.png" alt="RoPE vs Absolute PE"></p>
+<h3>Code Implementation (PyTorch)</h3>
+<p>To see how this works in practice, here is the core implementation of RoPE (adapted from HuggingFace&#39;s central modeling utilities used by models like Llama and Mistral).</p>
+<p>First, we generate the rotary frequencies and cache them:</p>
+<pre><code class="language-python">import torch
+import torch.nn as nn
+
+class RotaryEmbedding(nn.Module):
+    def __init__(self, config, device=None):
+        super().__init__()
+        self.rope_type = config.rope_parameters.get(&quot;rope_type&quot;, &quot;default&quot;)
+        self.max_seq_len_cached = config.max_position_embeddings
+        self.original_max_seq_len = config.max_position_embeddings
+
+        # Build base inv_freq (Theta)
+        base = config.rope_parameters.get(&quot;rope_theta&quot;, 10000.0)
+        partial_rotary_factor = config.rope_parameters.get(&quot;partial_rotary_factor&quot;, 1.0)
+        head_dim = getattr(config, &quot;head_dim&quot;, config.hidden_size // config.num_attention_heads)
+        
+        # Determine how many dimensions get rotated (often all of them, but not always)
+        dim = int(head_dim * partial_rotary_factor)
+
+        # Compute 10000^(-2i/d)
+        inv_freq = 1.0 / (base ** (torch.arange(0, dim, 2).float() / dim))
+        self.register_buffer(&quot;inv_freq&quot;, inv_freq, persistent=False)
+        self.attention_scaling = 1.0 # Used later for variants like YaRN
+
+    def forward(self, x, position_ids):
+        # Compute cos/sin for the given position IDs
+        inv_freq_expanded = self.inv_freq[None, :, None].expand(x.shape[0], -1, 1)
+        position_ids_expanded = position_ids[:, None, :].float()
+        
+        # Matrix multiply frequencies by positions
+        freqs = (inv_freq_expanded @ position_ids_expanded).transpose(1, 2)
+        
+        # Duplicate frequencies to match the Q/K vector shapes
+        emb = torch.cat((freqs, freqs), dim=-1)
+        cos = emb.cos()
+        sin = emb.sin()
+        
+        return cos * self.attention_scaling, sin * self.attention_scaling
+</code></pre>
+<p>Once the <code>cos</code> and <code>sin</code> values are generated for the given positions, they are applied to the Query and Key vectors inside the attention layer:</p>
+<pre><code class="language-python">def rotate_half(x):
+    &quot;&quot;&quot;Rotates half the hidden dims of the input.&quot;&quot;&quot;
+    x1 = x[..., : x.shape[-1] // 2]
+    x2 = x[..., x.shape[-1] // 2 :]
+    return torch.cat((-x2, x1), dim=-1)
+
+def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
+    &quot;&quot;&quot;Applies Rotary Position Embedding to the query and key tensors.&quot;&quot;&quot;
+    cos = cos.unsqueeze(unsqueeze_dim)
+    sin = sin.unsqueeze(unsqueeze_dim)
+    
+    # The magical rotation math: (Vector * Cos) + (Rotated_Vector * Sin)
+    q_embed = (q * cos) + (rotate_half(q) * sin)
+    k_embed = (k * cos) + (rotate_half(k) * sin)
+    
+    return q_embed, k_embed
+</code></pre>
+<p><strong>Why RoPE Won:</strong></p>
+<ul>
+<li>It explicitly encodes relative position.</li>
+<li>It decays with distance (distant tokens naturally have lower dot products, which mirrors how language works).</li>
+<li>It introduces zero new parameters.</li>
+<li><em>Models using this:</em> Nearly every modern LLM — Llama (1-4), Mistral, Qwen, Gemma, Phi, and DeepSeek.</li>
+</ul>
+<hr>
+<h2>4. Scaling the Context Window: Modern RoPE Variations</h2>
+<p>RoPE is fantastic, but it shares one flaw with learned embeddings: it extrapolates poorly. If you train a model on 4K tokens, it hasn&#39;t learned to evaluate the attention scores for a relative distance of 8K tokens. The rotations become too extreme, and the model generates gibberish.</p>
+<p>To extend the context window <em>after</em> training, researchers developed clever mathematical hacks to scale RoPE.</p>
+<h3>4.1 Linear Scaling (Position Interpolation)</h3>
+<p>Instead of letting the model extrapolate to unseen distances, we &quot;squish&quot; the new context window to fit within the original trained length by dividing all frequencies by a scaling factor.</p>
+$$\theta_i' = \theta_i / \text{factor}$$<p>If you want to double the context from 4K to 8K, your factor is 2. Position 8K is rotated identically to how position 4K used to be.</p>
+<h3>4.2 Dynamic NTK-Aware Scaling</h3>
+<p>Linear scaling squishes everything uniformly. But high-frequency dimensions (which handle local, token-to-token relationships) lose resolution when squished.
+NTK-Aware scaling dynamically alters the frequency base depending on the sequence length. It compresses low-frequency components (global context) while preserving high-frequency components (local context), meaning the model doesn&#39;t lose its sharp understanding of adjacent words just because the document got longer.</p>
+<h3>4.3 LongRoPE (Used in Phi-3/4)</h3>
+<p>Extends the context window to millions of tokens by searching for the optimal, individual scaling factor for <em>each specific dimension</em> rather than applying a single mathematical formula across the board. It uses separate scaling vectors depending on whether the context is short or long.</p>
+<hr>
+<h2>5. YaRN: The State-of-the-Art in Context Expansion</h2>
+<p><strong>YaRN (Yet another RoPE extensioN)</strong>, used in Mistral 4, is currently one of the most sophisticated methods for zero-shot context extension.</p>
+<p>YaRN observed that treating all frequency dimensions the same when interpolating degrades performance. Instead, YaRN calculates the &quot;wavelength&quot; ($\lambda$) of each dimension and divides them into three distinct bands:</p>
+<ol>
+<li><strong>High Frequency (Local patterns):</strong> $\lambda_i < \frac{L_{orig}}{\beta_{fast}}$. These dimensions rotate rapidly. YaRN applies <strong>Extrapolation</strong> (leaves them completely unchanged).</li>
+<li><strong>Low Frequency (Global patterns):</strong> $\lambda_i > \frac{L_{orig}}{\beta_{slow}}$. These dimensions barely rotate over the sequence. YaRN applies <strong>Interpolation</strong> (divides by the scale factor).</li>
+<li><strong>Intermediate Frequency:</strong> Everything in between. YaRN applies a <strong>Smooth Blend</strong> between extrapolation and interpolation based on the distance.</li>
+</ol>
+$$\theta_i' = (1 - \gamma_i) \cdot \frac{\theta_i}{\text{factor}} + \gamma_i \cdot \theta_i$$<p>Finally, because YaRN messes with the rotational distribution, it alters the average magnitude of the attention logits. To fix this, YaRN introduces an <strong>Attention Scaling Factor</strong> ($s$):</p>
+$$s = 0.1 \times \text{mscale} \times \ln(\text{factor}) + 1.0$$<p>Multiplying the attention softmax by $s$ perfectly restores the &quot;temperature&quot; of the attention mechanism, allowing a 4K model to read 32K or 128K tokens without additional fine-tuning.</p>
+<p><img src="../images/RoPE/YaRN.png" alt="YaRN Interpolation"></p>
+<h2>References</h2>
+<ol>
+<li>Vaswani et al. &quot;Attention Is All You Need&quot; (2017) — <a href="https://arxiv.org/abs/1706.03762">arXiv:1706.03762</a></li>
+<li>Su et al. &quot;RoFormer: Enhanced Transformer with Rotary Position Embedding&quot; (2021) — <a href="https://arxiv.org/abs/2104.09864">arXiv:2104.09864</a></li>
+<li>Peng et al. &quot;YaRN: Efficient Context Window Extension&quot; (2023) — <a href="https://arxiv.org/abs/2309.00071">arXiv:2309.00071</a></li>
+<li>Ding et al. &quot;LongRoPE: Extending Context Beyond 2M Tokens&quot; (2024) — <a href="https://arxiv.org/abs/2402.13753">arXiv:2402.13753</a></li>
+<li>Kazemnejad et al. &quot;Impact of Positional Encoding on Length Generalization&quot; (2023) — <a href="https://arxiv.org/abs/2305.19466">arXiv:2305.19466</a></li>
+<li>/u/kaiokendev &quot;Extending Context with Linear Scaling&quot; (2023) — <a href="https://kaiokendev.github.io/til">Blog</a></li>
+<li>/u/bloc97 &quot;NTK-Aware Scaled RoPE&quot; (2023) — <a href="https://www.reddit.com/r/LocalLLaMA/comments/14lz7j5/">Reddit</a></li>
+</ol>
+
+            </div>
+
+            <!-- Comments & Reactions Section -->
+            <div class="comments-section animate-on-scroll"
+                style="margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--border-glass);">
+                <h3 style="font-size: 1.6rem; margin-bottom: 24px; color: var(--heading); text-align: left;">Comments &
+                    Reactions</h3>
+                <div class="giscus"></div>
+            </div>
+
+            <div
+                style="margin-top: 60px; padding-top: 30px; border-top: 1px solid var(--border-glass); text-align: center;">
+                <a href="../blog.html" class="btn-outline" style="display: inline-flex;">
+                    <i class="fa fa-arrow-left"></i> Back to Blog
+                </a>
+            </div>
+        </article>
+    </main>
+
+    <!-- ===== Footer ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">V<span>.</span></div>
+                <div class="social-links">
+                    <a href="https://github.com/" target="_blank" aria-label="GitHub"><i class="fa fa-github"></i></a>
+                    <a href="https://scholar.google.co.in/citations?user=ShfcfMQAAAAJ&hl=en" target="_blank"
+                        aria-label="Google Scholar"><i class="ai ai-google-scholar-square"></i></a>
+                    <a href="https://www.linkedin.com/in/vismay-patel-24b2123a/" target="_blank"
+                        aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+                    <a href="https://www.instagram.com/vismay_xyz/" target="_blank" aria-label="Instagram"><i
+                            class="fa fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Vismay Patel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/scripts.js"></script>
+    <!-- marked.js for Markdown parsing -->
+    
+    <!-- MathJax for rendering LaTeX equations -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <script>
+        (async function () {
+            const slug = "YaRN";
+
+            // Add copy buttons to code snippets
+            document.querySelectorAll('.blog-post-body pre').forEach((pre) => {
+                const button = document.createElement('button');
+                button.className = 'copy-code-btn';
+                button.innerHTML = '<i class="fa fa-copy"></i>';
+                button.setAttribute('aria-label', 'Copy code snippet');
+                
+                button.addEventListener('click', async () => {
+                    const code = pre.querySelector('code');
+                    const codeText = code ? code.innerText : pre.innerText;
+                    try {
+                        await navigator.clipboard.writeText(codeText);
+                        button.innerHTML = '<i class="fa fa-check" style="color: #2cb67d;"></i>';
+                        button.classList.add('copied');
+                        setTimeout(() => {
+                            button.innerHTML = '<i class="fa fa-copy"></i>';
+                            button.classList.remove('copied');
+                        }, 1500);
+                    } catch (err) {
+                        console.error('Failed to copy code: ', err);
+                    }
+                });
+                
+                pre.appendChild(button);
+            });
+
+            // Load views badge dynamically (using komarev.com - completely free and login-free!)
+            const viewsImg = document.createElement('img');
+            const counterId = `https://vismay93.github.io/blog/post.html?slug=${slug}`;
+            viewsImg.src = `https://api.visitorbadge.io/api/visitors?path=${counterId}&labelColor=%232d3a8c&countColor=%231a7a6d&label=Views`;
+            viewsImg.alt = '';
+            viewsImg.style.height = '20px';
+            viewsImg.style.borderRadius = '4px';
+            viewsImg.style.verticalAlign = 'middle';
+            const viewsContainer = document.getElementById('postViews');
+            if (viewsContainer) {
+                viewsContainer.appendChild(viewsImg);
+            }
+
+            // Initialize Giscus Comments & Reactions
+            const giscusScript = document.createElement('script');
+            giscusScript.src = 'https://giscus.app/client.js';
+            giscusScript.setAttribute('data-repo', 'vismay93/vismay93.github.io');
+            giscusScript.setAttribute('data-repo-id', 'MDEwOlJlcG9zaXRvcnkzMjUwNDg0NjY=');
+            giscusScript.setAttribute('data-category', 'General'); 
+            giscusScript.setAttribute('data-category-id', 'DIC_kwDOE1_Yks4C9r-Q');
+            giscusScript.setAttribute('data-mapping', 'pathname');
+            giscusScript.setAttribute('data-strict', '0');
+            giscusScript.setAttribute('data-reactions-enabled', '1');
+            giscusScript.setAttribute('data-emit-metadata', '0');
+            giscusScript.setAttribute('data-input-position', 'bottom');
+            giscusScript.setAttribute('data-theme', 'noborder_light');
+            giscusScript.setAttribute('data-lang', 'en');
+            giscusScript.crossOrigin = 'anonymous';
+            giscusScript.async = true;
+            document.body.appendChild(giscusScript);
+
+            // Trigger MathJax typesetting if MathJax is loaded
+            if (window.MathJax) {
+                if (window.MathJax.typesetPromise) {
+                    window.MathJax.typesetPromise([document.getElementById('postBody')]).catch(err => console.log(err));
+                } else if (window.MathJax.startup && window.MathJax.startup.promise) {
+                    window.MathJax.startup.promise.then(() => {
+                        window.MathJax.typesetPromise([document.getElementById('postBody')]);
+                    }).catch(err => console.log(err));
+                }
+            }
+        })();
+    </script>
+</body>
+
+</html>

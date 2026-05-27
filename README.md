@@ -55,6 +55,27 @@ At this point, the page is ready to go and you can begin to add your own informa
 
 If you wish to use the template as is (i.e. how it's seen in the demo), then all that's required is the `css`, `images`, `js`, `libs` folders and the `index.html` file. You would then add your content to `index.html` as needed and you're good to go!
 
+### Building Static Blog Posts
+
+To optimize for SEO and ensure blog posts are fully crawlable by search engines, the blog posts are converted from Markdown (`blog/posts/*.md`) to static HTML files (`blog/*.html`).
+
+1. **Install Build Dependencies**:
+   Ensure you have Node.js installed, then run:
+   ```bash
+   npm install
+   ```
+
+2. **Run the Build Script**:
+   Whenever you add a new post in `blog/posts/` and register it in `blog/posts.json`, compile the static files by running:
+   ```bash
+   npm run build
+   ```
+   This will:
+   - Compile Markdown posts into pre-rendered HTML files (`blog/${slug}.html`) with full OpenGraph, Twitter Card, and Canonical metadata.
+   - Automatically generate a fresh `sitemap.xml` in the root.
+   - Update `robots.txt` to point search crawlers to the sitemap.
+
+
 ## Customization and Editing
 
 ### General

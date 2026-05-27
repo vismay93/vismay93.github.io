@@ -49,13 +49,15 @@
 
         <!-- Blog post body -->
         <article class="blog-post-content">
-            <div class="blog-post-body animate-on-scroll" id="postBody">
+            <div class="blog-post-body" id="postBody">
                 <p style="text-align: center; color: var(--text-muted);">Loading post...</p>
             </div>
 
             <!-- Comments & Reactions Section -->
-            <div class="comments-section animate-on-scroll" style="margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--border-glass);">
-                <h3 style="font-size: 1.6rem; margin-bottom: 24px; color: var(--heading); text-align: left;">Comments & Reactions</h3>
+            <div class="comments-section animate-on-scroll"
+                style="margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--border-glass);">
+                <h3 style="font-size: 1.6rem; margin-bottom: 24px; color: var(--heading); text-align: left;">Comments &
+                    Reactions</h3>
                 <div class="giscus"></div>
             </div>
 
@@ -188,7 +190,7 @@
                     button.className = 'copy-code-btn';
                     button.innerHTML = '<i class="fa fa-copy"></i>';
                     button.setAttribute('aria-label', 'Copy code snippet');
-                    
+
                     button.addEventListener('click', async () => {
                         const code = pre.querySelector('code');
                         const codeText = code ? code.innerText : pre.innerText;
@@ -204,13 +206,13 @@
                             console.error('Failed to copy code: ', err);
                         }
                     });
-                    
+
                     pre.appendChild(button);
                 });
 
                 // Load views badge dynamically (using komarev.com - completely free and login-free!)
                 const viewsImg = document.createElement('img');
-                const counterId = `https://vismay93.github.io/blog/post.html?slug=${slug}`;
+                const counterId = `https://vismay93.github.io/blog/${slug}.html`;
                 viewsImg.src = `https://api.visitorbadge.io/api/visitors?path=${counterId}&labelColor=%232d3a8c&countColor=%231a7a6d&label=Views`;
                 viewsImg.alt = '';
                 viewsImg.style.height = '20px';
@@ -226,7 +228,7 @@
                 giscusScript.src = 'https://giscus.app/client.js';
                 giscusScript.setAttribute('data-repo', 'vismay93/vismay93.github.io');
                 giscusScript.setAttribute('data-repo-id', 'MDEwOlJlcG9zaXRvcnkzMjUwNDg0NjY=');
-                giscusScript.setAttribute('data-category', 'General'); 
+                giscusScript.setAttribute('data-category', 'General');
                 giscusScript.setAttribute('data-category-id', 'DIC_kwDOE1_Yks4C9r-Q');
                 giscusScript.setAttribute('data-mapping', 'pathname');
                 giscusScript.setAttribute('data-strict', '0');
