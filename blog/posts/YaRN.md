@@ -176,6 +176,8 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
 RoPE is fantastic, but it shares one flaw with learned embeddings: it extrapolates poorly. If you train a model on 4K tokens, it hasn't learned to evaluate the attention scores for a relative distance of 8K tokens. The rotations become too extreme, and the model generates gibberish.
 
+![RoPE Extrapolation Failure](../images/RoPE/rope_extrapolation_fail.png)
+
 To extend the context window *after* training, researchers developed clever mathematical hacks to scale RoPE.
 
 ### 4.1 Linear Scaling (Position Interpolation)
@@ -188,10 +190,12 @@ $$\theta_i' = \theta_i / \text{factor}$$
 
 If you want to double the context from 4K to 8K, your factor is 2. Position 8K is rotated identically to how position 4K used to be.
 
+![RoPE Linear Scaling](../images/RoPE/rope_linear_scaling.png)
+
 ### 4.2 Dynamic NTK-Aware Scaling
 
 Linear scaling squishes everything uniformly. But high-frequency dimensions (which handle local, token-to-token relationships) lose resolution when squished.
-NTK-Aware scaling dynamically alters the frequency base depending on the sequence length. It compresses low-frequency components (global context) while preserving high-frequency components (local context), meaning the model doesn't lose its sharp understanding of adjacent words just because the document got longer.
+NTK-Aware scaling dynamically alters the frequency base depending on the sequence length. It compresses low-frequency components (higher dimensions) while preserving high-frequency components (lower dimensions), meaning the model doesn't lose its sharp understanding of adjacent words just because the document got longer.
 
 ### 4.3 LongRoPE (Used in Phi-3/4)
 
@@ -201,7 +205,7 @@ Extends the context window to millions of tokens by searching for the optimal, i
 
 ## 5. YaRN: The State-of-the-Art in Context Expansion
 
-**YaRN (Yet another RoPE extensioN)**, used in Mistral 4, is currently one of the most sophisticated methods for zero-shot context extension.
+**YaRN (Yet another RoPE extensioN)**, used in Mistral 4, is one of the most sophisticated methods for zero-shot context extension.
 
 YaRN observed that treating all frequency dimensions the same when interpolating degrades performance. Instead, YaRN calculates the "wavelength" ($\lambda$) of each dimension and divides them into three distinct bands:
 
