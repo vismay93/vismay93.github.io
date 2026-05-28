@@ -178,7 +178,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 RoPE is fantastic, but it shares one flaw with learned embeddings: it extrapolates poorly. If you train a model on 4K tokens, it hasn't learned to evaluate the attention scores for a relative distance of 8K tokens. The rotations become too extreme, and the model generates gibberish.
 
 ![RoPE Extrapolation Failure](../images/RoPE/rope_extrapolation_fail.png)
-*Figure 2: Heatmap of RoPE embeddings across positions. The model is trained on positions 0-100 (left). When extrapolated to position 150 (right), the rotations enter a state (highlighted in pink) that the model never encountered during training, leading to Out-of-Distribution (OOD) errors and model collapse.*
+*Figure 2: Heatmap of RoPE embeddings across positions. The model is trained on positions 0-100 (left). When extrapolated to position 300 (right), the rotations enter a state (highlighted in pink) that the model never encountered during training, leading to Out-of-Distribution (OOD) errors and model collapse.*
 
 To extend the context window *after* training, researchers developed clever mathematical hacks to scale RoPE.
 

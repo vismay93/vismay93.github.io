@@ -118,7 +118,7 @@ $$R_{\Theta,m} = \begin{pmatrix} \cos m\theta_1 & -\sin m\theta_1 & & \\ \sin m\
 $$\theta_i = 10000^{-2i/d}$$<p>Vaswani <em>added</em> these frequencies to the inputs. RoPE uses these frequencies to <em>rotate</em> the Q and K vectors.</p>
 <p>Because rotation is a linear operation, when the attention mechanism computes the dot product between a Query at position $m$ and a Key at position $n$, the absolute positions cancel out. The resulting attention score is governed entirely by the relative distance $(m - n)$:</p>
 $$\langle f(q_m, m), f(k_n, n) \rangle = \langle R_{\Theta,m-n} \cdot q_m, k_n \rangle$$<p><img src="../images/RoPE/rope_vs_pe.png" alt="RoPE vs Absolute PE">
-<em>Figure 1: Comparison of Absolute PE (top) vs. RoPE (bottom). Absolute PE shifts the vector by translation, which changes the dot product when positions shift. RoPE applies a position-dependent rotation that preserves the relative angle—and thus the dot product—between tokens regardless of their absolute position, making the mechanism naturally translation-invariant.</em></p>
+<em>Figure 1: Comparison of Absolute PE (top) vs. RoPE (bottom). Absolute PE shifts the vector by translation, which changes the dot product when positions shift. RoPE applies a position-dependent rotation that preserves the relative angle and thus the dot product between tokens regardless of their absolute position, making the mechanism naturally translation-invariant.</em></p>
 <h3>Code Implementation (PyTorch)</h3>
 <p>To see how this works in practice, here is the core implementation of RoPE (adapted from HuggingFace&#39;s central modeling utilities used by models like Llama and Mistral).</p>
 <p>First, we generate the rotary frequencies and cache them:</p>
@@ -189,13 +189,13 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 <h2>4. Scaling the Context Window: Modern RoPE Variations</h2>
 <p>RoPE is fantastic, but it shares one flaw with learned embeddings: it extrapolates poorly. If you train a model on 4K tokens, it hasn&#39;t learned to evaluate the attention scores for a relative distance of 8K tokens. The rotations become too extreme, and the model generates gibberish.</p>
 <p><img src="../images/RoPE/rope_extrapolation_fail.png" alt="RoPE Extrapolation Failure">
-<em>Figure 2: Heatmap of RoPE embeddings across positions. The model is trained on positions 0-100 (left). When extrapolated to position 150 (right), the rotations enter a state (highlighted in pink) that the model never encountered during training, leading to Out-of-Distribution (OOD) errors and model collapse.</em></p>
+<em>Figure 2: Heatmap of RoPE embeddings across positions. The model is trained on positions 0-100 (left). When extrapolated to position 300 (right), the rotations enter a state (highlighted in pink) that the model never encountered during training, leading to Out-of-Distribution (OOD) errors and model collapse.</em></p>
 <p>To extend the context window <em>after</em> training, researchers developed clever mathematical hacks to scale RoPE.</p>
 <h3>4.1 Linear Scaling (Position Interpolation)</h3>
 <p>Instead of letting the model extrapolate to unseen distances, we &quot;squish&quot; the new context window to fit within the original trained length by dividing all frequencies by a scaling factor.</p>
 $$\theta_i' = \theta_i / \text{factor}$$<p>If you want to double the context from 4K to 8K, your factor is 2. Position 8K is rotated identically to how position 4K used to be.</p>
 <p><img src="../images/RoPE/rope_linear_scaling.png" alt="RoPE Linear Scaling">
-<em>Figure 3: Linear Scaling side-by-side comparison. By dividing the position index by a scale factor, we &quot;squish&quot; a 200-token sequence (right) so that its embedding patterns perfectly match the 100-token distribution seen during training (left). This ensures the model remains within its &quot;safe&quot; distribution even for longer sequences.</em></p>
+<em>Figure 3: Heatmap of Linear Scaling (Position Interpolation). By dividing the position index by a scale factor, we &quot;squish&quot; a 300-token sequence (right) so that its embedding patterns perfectly match the 100-token distribution seen during training (left). This ensures the model remains within its &quot;safe&quot; distribution even for longer sequences.</em></p>
 <h3>4.2 Dynamic NTK-Aware Scaling</h3>
 <p>Linear scaling squishes everything uniformly. But high-frequency dimensions (which handle local, token-to-token relationships) lose resolution when squished.
 NTK-Aware scaling dynamically alters the frequency base depending on the sequence length. It compresses low-frequency components (higher dimensions) while preserving high-frequency components (lower dimensions), meaning the model doesn&#39;t lose its sharp understanding of adjacent words just because the document got longer.</p>
