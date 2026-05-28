@@ -93,6 +93,7 @@ Because rotation is a linear operation, when the attention mechanism computes th
 $$\langle f(q_m, m), f(k_n, n) \rangle = \langle R_{\Theta,m-n} \cdot q_m, k_n \rangle$$
 
 ![RoPE vs Absolute PE](../images/RoPE/rope_vs_pe.png)
+*Figure 1: Comparison of Absolute PE (top) vs. RoPE (bottom). Absolute PE shifts the vector by translation, which changes the dot product when positions shift. RoPE applies a position-dependent rotation that preserves the relative angle and thus the dot product between tokens regardless of their absolute position, making the mechanism naturally translation-invariant.*
 
 ### Code Implementation (PyTorch)
 
@@ -177,6 +178,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 RoPE is fantastic, but it shares one flaw with learned embeddings: it extrapolates poorly. If you train a model on 4K tokens, it hasn't learned to evaluate the attention scores for a relative distance of 8K tokens. The rotations become too extreme, and the model generates gibberish.
 
 ![RoPE Extrapolation Failure](../images/RoPE/rope_extrapolation_fail.png)
+*Figure 2: Heatmap of RoPE embeddings across positions. The model is trained on positions 0-100 (left). When extrapolated to position 150 (right), the rotations enter a state (highlighted in pink) that the model never encountered during training, leading to Out-of-Distribution (OOD) errors and model collapse.*
 
 To extend the context window *after* training, researchers developed clever mathematical hacks to scale RoPE.
 
@@ -191,6 +193,7 @@ $$\theta_i' = \theta_i / \text{factor}$$
 If you want to double the context from 4K to 8K, your factor is 2. Position 8K is rotated identically to how position 4K used to be.
 
 ![RoPE Linear Scaling](../images/RoPE/rope_linear_scaling.png)
+*Figure 3: Heatmap of Linear Scaling (Position Interpolation). By dividing the position index by a scale factor, we "squish" a 300-token sequence (right) so that its embedding patterns perfectly match the 100-token distribution seen during training (left). This ensures the model remains within its "safe" distribution even for longer sequences.*
 
 ### 4.2 Dynamic NTK-Aware Scaling
 
@@ -224,6 +227,8 @@ $$s = 0.1 \times \text{mscale} \times \ln(\text{factor}) + 1.0$$
 Multiplying the attention softmax by $s$ perfectly restores the "temperature" of the attention mechanism, allowing a 4K model to read 32K or 128K tokens without additional fine-tuning.
 
 ![YaRN Interpolation](../images/RoPE/YaRN.png)
+*Figure 4: YaRN Multi-Scale Interpolation. Instead of scaling all dimensions equally, YaRN preserves high-frequency dimensions (local context) while interpolating low-frequency ones (global context). This hybrid approach maintains "sharp" attention for adjacent tokens while extending the overall context window.*
+
 
 ## References
 
