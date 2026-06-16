@@ -41,7 +41,33 @@ const inlineMath = {
     }
 };
 
-marked.use({ extensions: [blockMath, inlineMath] });
+const renderer = {
+    image(href, title, text) {
+        let width = '';
+        let height = '';
+        let loading = 'lazy';
+        
+        if (href.includes('rope_vs_pe')) {
+            width = '2324';
+            height = '2362';
+        } else if (href.includes('rope_extrapolation_fail')) {
+            width = '3208';
+            height = '1481';
+        } else if (href.includes('rope_linear_scaling')) {
+            width = '3208';
+            height = '1443';
+        } else if (href.includes('YaRN')) {
+            width = '1039';
+            height = '650';
+        }
+        
+        // Convert references to .png images into next-gen .webp
+        const webpHref = href.replace(/\.png$/, '.webp');
+        return `<img src="${webpHref}" alt="${text}" width="${width}" height="${height}" loading="${loading}" decoding="async">`;
+    }
+};
+
+marked.use({ renderer, extensions: [blockMath, inlineMath] });
 
 // Path setup
 const rootDir = path.join(__dirname, '..');
@@ -200,23 +226,34 @@ posts.forEach(post => {
                 viewsContainer.appendChild(viewsImg);
             }
 
-            // Initialize Giscus Comments & Reactions
-            const giscusScript = document.createElement('script');
-            giscusScript.src = 'https://giscus.app/client.js';
-            giscusScript.setAttribute('data-repo', 'vismay93/vismay93.github.io');
-            giscusScript.setAttribute('data-repo-id', 'MDEwOlJlcG9zaXRvcnkzMjUwNDg0NjY=');
-            giscusScript.setAttribute('data-category', 'General'); 
-            giscusScript.setAttribute('data-category-id', 'DIC_kwDOE1_Yks4C9r-Q');
-            giscusScript.setAttribute('data-mapping', 'pathname');
-            giscusScript.setAttribute('data-strict', '0');
-            giscusScript.setAttribute('data-reactions-enabled', '1');
-            giscusScript.setAttribute('data-emit-metadata', '0');
-            giscusScript.setAttribute('data-input-position', 'bottom');
-            giscusScript.setAttribute('data-theme', 'noborder_light');
-            giscusScript.setAttribute('data-lang', 'en');
-            giscusScript.crossOrigin = 'anonymous';
-            giscusScript.async = true;
-            document.body.appendChild(giscusScript);
+            // Initialize Giscus Comments & Reactions when they come into view (improves page load PageSpeed)
+            const commentsSection = document.querySelector('.comments-section');
+            if (commentsSection) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const giscusScript = document.createElement('script');
+                            giscusScript.src = 'https://giscus.app/client.js';
+                            giscusScript.setAttribute('data-repo', 'vismay93/vismay93.github.io');
+                            giscusScript.setAttribute('data-repo-id', 'MDEwOlJlcG9zaXRvcnkzMjUwNDg0NjY=');
+                            giscusScript.setAttribute('data-category', 'General'); 
+                            giscusScript.setAttribute('data-category-id', 'DIC_kwDOE1_Yks4C9r-Q');
+                            giscusScript.setAttribute('data-mapping', 'pathname');
+                            giscusScript.setAttribute('data-strict', '0');
+                            giscusScript.setAttribute('data-reactions-enabled', '1');
+                            giscusScript.setAttribute('data-emit-metadata', '0');
+                            giscusScript.setAttribute('data-input-position', 'bottom');
+                            giscusScript.setAttribute('data-theme', 'noborder_light');
+                            giscusScript.setAttribute('data-lang', 'en');
+                            giscusScript.crossOrigin = 'anonymous';
+                            giscusScript.async = true;
+                            document.body.appendChild(giscusScript);
+                            observer.disconnect();
+                        }
+                    });
+                }, { rootMargin: '200px' });
+                observer.observe(commentsSection);
+            }
 
             // Trigger MathJax typesetting if MathJax is loaded
             if (window.MathJax) {

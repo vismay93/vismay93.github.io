@@ -7,11 +7,26 @@
     <title>The Evolution of Positional Embeddings: From Absolute Positional Embeddings to YaRN — Vismay Patel</title>
     <meta name="description" content="A deep dive into positional embeddings, tracing their evolution from the original sinusoidal approach to Rotary Position Embeddings (RoPE) and YaRN and context window scaling.">
     <meta name="author" content="Vismay Patel">
+    
+    <!-- Preconnect to domains to reduce DNS/TLS latency -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
     <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    
+    <!-- Parallel load Google Fonts instead of render-blocking @import in CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+    
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../libs/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../libs/academicons-1.9.1/css/academicons.min.css">
+    
+    <!-- Asynchronously load non-critical icon fonts -->
+    <link rel="stylesheet" href="../libs/font-awesome/css/font-awesome.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="../libs/font-awesome/css/font-awesome.min.css"></noscript>
+    
+    <link rel="stylesheet" href="../libs/academicons-1.9.1/css/academicons.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="../libs/academicons-1.9.1/css/academicons.min.css"></noscript>
 
     <!-- SEO Meta Tags -->
     <meta property="og:title" content="The Evolution of Positional Embeddings: From Absolute Positional Embeddings to YaRN — Vismay Patel">
@@ -117,7 +132,7 @@ $$R_{\Theta,m} = \begin{pmatrix} \cos m\theta_1 & -\sin m\theta_1 & & \\ \sin m\
 <p>Here is the brilliant part: what are those $\theta$ angles? They are exactly the same frequency basis used in the original 2017 sinusoidal embeddings!</p>
 $$\theta_i = 10000^{-2i/d}$$<p>Vaswani <em>added</em> these frequencies to the inputs. RoPE uses these frequencies to <em>rotate</em> the Q and K vectors.</p>
 <p>Because rotation is a linear operation, when the attention mechanism computes the dot product between a Query at position $m$ and a Key at position $n$, the absolute positions cancel out. The resulting attention score is governed entirely by the relative distance $(m - n)$:</p>
-$$\langle f(q_m, m), f(k_n, n) \rangle = \langle R_{\Theta,m-n} \cdot q_m, k_n \rangle$$<p><img src="../images/RoPE/rope_vs_pe.png" alt="RoPE vs Absolute PE">
+$$\langle f(q_m, m), f(k_n, n) \rangle = \langle R_{\Theta,m-n} \cdot q_m, k_n \rangle$$<p><img src="../images/RoPE/rope_vs_pe.webp" alt="RoPE vs Absolute PE" width="2324" height="2362" loading="lazy" decoding="async">
 <em>Figure 1: Comparison of Absolute PE (top) vs. RoPE (bottom). Absolute PE shifts the vector by translation, which changes the dot product when positions shift. RoPE applies a position-dependent rotation that preserves the relative angle and thus the dot product between tokens regardless of their absolute position, making the mechanism naturally translation-invariant.</em></p>
 <h3>Code Implementation (PyTorch)</h3>
 <p>To see how this works in practice, here is the core implementation of RoPE (adapted from HuggingFace&#39;s central modeling utilities used by models like Llama and Mistral).</p>
@@ -188,13 +203,13 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 <hr>
 <h2>4. Scaling the Context Window: Modern RoPE Variations</h2>
 <p>RoPE is fantastic, but it shares one flaw with learned embeddings: it extrapolates poorly. If you train a model on 4K tokens, it hasn&#39;t learned to evaluate the attention scores for a relative distance of 8K tokens. The rotations become too extreme, and the model generates gibberish.</p>
-<p><img src="../images/RoPE/rope_extrapolation_fail.png" alt="RoPE Extrapolation Failure">
+<p><img src="../images/RoPE/rope_extrapolation_fail.webp" alt="RoPE Extrapolation Failure" width="3208" height="1481" loading="lazy" decoding="async">
 <em>Figure 2: Heatmap of RoPE embeddings across positions. The model is trained on positions 0-100 (left). When extrapolated to position 300 (right), the rotations enter a state (highlighted in pink) that the model never encountered during training, leading to Out-of-Distribution (OOD) errors and model collapse.</em></p>
 <p>To extend the context window <em>after</em> training, researchers developed clever mathematical hacks to scale RoPE.</p>
 <h3>4.1 Linear Scaling (Position Interpolation)</h3>
 <p>Instead of letting the model extrapolate to unseen distances, we &quot;squish&quot; the new context window to fit within the original trained length by dividing all frequencies by a scaling factor.</p>
 $$\theta_i' = \theta_i / \text{factor}$$<p>If you want to double the context from 4K to 8K, your factor is 2. Position 8K is rotated identically to how position 4K used to be.</p>
-<p><img src="../images/RoPE/rope_linear_scaling.png" alt="RoPE Linear Scaling">
+<p><img src="../images/RoPE/rope_linear_scaling.webp" alt="RoPE Linear Scaling" width="3208" height="1443" loading="lazy" decoding="async">
 <em>Figure 3: Heatmap of Linear Scaling (Position Interpolation). By dividing the position index by a scale factor, we &quot;squish&quot; a 300-token sequence (right) so that its embedding patterns perfectly match the 100-token distribution seen during training (left). This ensures the model remains within its &quot;safe&quot; distribution even for longer sequences.</em></p>
 <h3>4.2 Dynamic NTK-Aware Scaling</h3>
 <p>Linear scaling squishes everything uniformly. But high-frequency dimensions (which handle local, token-to-token relationships) lose resolution when squished.
@@ -212,7 +227,7 @@ NTK-Aware scaling dynamically alters the frequency base depending on the sequenc
 </ol>
 $$\theta_i' = (1 - \gamma_i) \cdot \frac{\theta_i}{\text{factor}} + \gamma_i \cdot \theta_i$$<p>Finally, because YaRN messes with the rotational distribution, it alters the average magnitude of the attention logits. To fix this, YaRN introduces an <strong>Attention Scaling Factor</strong> ($s$):</p>
 $$s = 0.1 \times \text{mscale} \times \ln(\text{factor}) + 1.0$$<p>Multiplying the attention softmax by $s$ perfectly restores the &quot;temperature&quot; of the attention mechanism, allowing a 4K model to read 32K or 128K tokens without additional fine-tuning.</p>
-<p><img src="../images/RoPE/YaRN.png" alt="YaRN Interpolation">
+<p><img src="../images/RoPE/YaRN.webp" alt="YaRN Interpolation" width="1039" height="650" loading="lazy" decoding="async">
 <em>Figure 4: YaRN Multi-Scale Interpolation. Instead of scaling all dimensions equally, YaRN preserves high-frequency dimensions (local context) while interpolating low-frequency ones (global context). This hybrid approach maintains &quot;sharp&quot; attention for adjacent tokens while extending the overall context window.</em></p>
 <h2>References</h2>
 <ol>
@@ -265,9 +280,9 @@ $$s = 0.1 \times \text{mscale} \times \ln(\text{factor}) + 1.0$$<p>Multiplying t
         </div>
     </footer>
 
-    <script src="../js/scripts.js"></script>
+    <script src="../js/scripts.js" defer></script>
     <!-- marked.js for Markdown parsing -->
-    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
     <!-- MathJax for rendering LaTeX equations -->
     <script>
         window.MathJax = {
@@ -282,7 +297,7 @@ $$s = 0.1 \times \text{mscale} \times \ln(\text{factor}) + 1.0$$<p>Multiplying t
             }
         };
     </script>
-    <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <script>
         (async function () {
             const slug = "YaRN";
@@ -326,23 +341,34 @@ $$s = 0.1 \times \text{mscale} \times \ln(\text{factor}) + 1.0$$<p>Multiplying t
                 viewsContainer.appendChild(viewsImg);
             }
 
-            // Initialize Giscus Comments & Reactions
-            const giscusScript = document.createElement('script');
-            giscusScript.src = 'https://giscus.app/client.js';
-            giscusScript.setAttribute('data-repo', 'vismay93/vismay93.github.io');
-            giscusScript.setAttribute('data-repo-id', 'MDEwOlJlcG9zaXRvcnkzMjUwNDg0NjY=');
-            giscusScript.setAttribute('data-category', 'General'); 
-            giscusScript.setAttribute('data-category-id', 'DIC_kwDOE1_Yks4C9r-Q');
-            giscusScript.setAttribute('data-mapping', 'pathname');
-            giscusScript.setAttribute('data-strict', '0');
-            giscusScript.setAttribute('data-reactions-enabled', '1');
-            giscusScript.setAttribute('data-emit-metadata', '0');
-            giscusScript.setAttribute('data-input-position', 'bottom');
-            giscusScript.setAttribute('data-theme', 'noborder_light');
-            giscusScript.setAttribute('data-lang', 'en');
-            giscusScript.crossOrigin = 'anonymous';
-            giscusScript.async = true;
-            document.body.appendChild(giscusScript);
+            // Initialize Giscus Comments & Reactions when they come into view (improves page load PageSpeed)
+            const commentsSection = document.querySelector('.comments-section');
+            if (commentsSection) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const giscusScript = document.createElement('script');
+                            giscusScript.src = 'https://giscus.app/client.js';
+                            giscusScript.setAttribute('data-repo', 'vismay93/vismay93.github.io');
+                            giscusScript.setAttribute('data-repo-id', 'MDEwOlJlcG9zaXRvcnkzMjUwNDg0NjY=');
+                            giscusScript.setAttribute('data-category', 'General'); 
+                            giscusScript.setAttribute('data-category-id', 'DIC_kwDOE1_Yks4C9r-Q');
+                            giscusScript.setAttribute('data-mapping', 'pathname');
+                            giscusScript.setAttribute('data-strict', '0');
+                            giscusScript.setAttribute('data-reactions-enabled', '1');
+                            giscusScript.setAttribute('data-emit-metadata', '0');
+                            giscusScript.setAttribute('data-input-position', 'bottom');
+                            giscusScript.setAttribute('data-theme', 'noborder_light');
+                            giscusScript.setAttribute('data-lang', 'en');
+                            giscusScript.crossOrigin = 'anonymous';
+                            giscusScript.async = true;
+                            document.body.appendChild(giscusScript);
+                            observer.disconnect();
+                        }
+                    });
+                }, { rootMargin: '200px' });
+                observer.observe(commentsSection);
+            }
 
             // Trigger MathJax typesetting if MathJax is loaded
             if (window.MathJax) {

@@ -7,11 +7,26 @@
     <title>Blog Post — Vismay Patel</title>
     <meta name="description" content="Blog post by Vismay Patel">
     <meta name="author" content="Vismay Patel">
+    
+    <!-- Preconnect to domains to reduce DNS/TLS latency -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
     <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    
+    <!-- Parallel load Google Fonts instead of render-blocking @import in CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+    
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../libs/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../libs/academicons-1.9.1/css/academicons.min.css">
+    
+    <!-- Asynchronously load non-critical icon fonts -->
+    <link rel="stylesheet" href="../libs/font-awesome/css/font-awesome.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="../libs/font-awesome/css/font-awesome.min.css"></noscript>
+    
+    <link rel="stylesheet" href="../libs/academicons-1.9.1/css/academicons.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="../libs/academicons-1.9.1/css/academicons.min.css"></noscript>
 </head>
 
 <body class="page-load">
@@ -91,9 +106,9 @@
         </div>
     </footer>
 
-    <script src="../js/scripts.js"></script>
+    <script src="../js/scripts.js" defer></script>
     <!-- marked.js for Markdown parsing -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
     <!-- MathJax for rendering LaTeX equations -->
     <script>
         window.MathJax = {
@@ -108,7 +123,7 @@
             }
         };
     </script>
-    <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <script>
         // Configure marked extensions to ignore math blocks so they don't get processed as markdown.
         const blockMath = {

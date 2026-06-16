@@ -8,11 +8,25 @@
   <meta name="description"
     content="Portfolio of Vismay Patel - Applied Scientist at Amazon with 8 years in ML, Computer Vision, NLP, and Generative AI. IIT Madras alumnus.">
   <meta name="author" content="Vismay Patel">
+  
+  <!-- Preconnect to domains to reduce DNS/TLS latency -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
+  
+  <!-- Parallel load Google Fonts instead of render-blocking @import in CSS -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+  
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
-  <link rel="stylesheet" href="libs/academicons-1.9.1/css/academicons.min.css">
+  
+  <!-- Asynchronously load non-critical icon fonts -->
+  <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css"></noscript>
+  
+  <link rel="stylesheet" href="libs/academicons-1.9.1/css/academicons.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="libs/academicons-1.9.1/css/academicons.min.css"></noscript>
 </head>
 
 <body class="page-load">
@@ -454,7 +468,7 @@
     </div>
   </footer>
 
-  <script src="js/scripts.js"></script>
+  <script src="js/scripts.js" defer></script>
 </body>
 
 </html>
